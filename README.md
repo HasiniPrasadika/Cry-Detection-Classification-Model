@@ -1,11 +1,23 @@
 # Baby Cry Detection & Classification System
 
 A comprehensive machine learning system for detecting and classifying baby cries using advanced audio processing and deep learning techniques. This project implements a two-stage pipeline: first detecting whether audio contains a baby cry, then classifying the cry type to help caregivers understand the baby's needs.
+
 The model was developed for our final-year research project, **Development of an Automated Condition Controlling and Monitoring System for an Infant Incubator**.
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.20.0-orange.svg)](https://www.tensorflow.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.51.0-red.svg)](https://streamlit.io/)
+
+## What's New in This Fork
+
+This fork includes additional integration components for real-time incubator monitoring:
+
+- **Incubator Pipeline Integration** (`incubator_cry_detection_pipeline/`):
+  - `cry_detector.py` - Real-time cry detection service for incubator systems
+  - `cry_classification_service.py` - Production-ready classification service
+- **Enhanced Production Deployment** - Ready-to-use modules for integration with IoT monitoring systems
+- **Optimized for Real-time Processing** - Designed for continuous audio stream analysis
+- **Updated Documentation** - Comprehensive setup and integration guides
 
 ## Overview
 
@@ -200,8 +212,22 @@ All trained models are stored in the `cry_project/` directory:
 1. **Clone the repository**
 
 ```powershell
-git clone https://github.com/HasiniPrasadika/Cry-Detection-Classification-Model.git
+# Clone your forked repository
+git clone https://github.com/sahanrashmikaslk/Cry-Detection-Classification-Model.git
 cd Cry-Detection-Classification-Model/cry_project
+```
+
+**Note:** Replace `sahanrashmikaslk` with your GitHub username if you've forked this repository.
+
+To sync with the original repository:
+
+```powershell
+# Add upstream remote
+git remote add upstream https://github.com/HasiniPrasadika/Cry-Detection-Classification-Model.git
+
+# Fetch and merge updates
+git fetch upstream
+git merge upstream/main
 ```
 
 2. **Create and activate virtual environment**
@@ -338,6 +364,10 @@ Cry-Detection-Classification-Model/
 │   ├── CryClassification.ipynb          # Classification model training notebook
 │   └── CryDetectionModelTraining.ipynb  # Detection model training notebook
 │
+├── incubator_cry_detection_pipeline/    # Production integration modules
+│   ├── cry_detector.py                  # Real-time cry detection service
+│   └── cry_classification_service.py    # Production classification service
+│
 ├── dataset/                             # Classification training dataset
 │   ├── belly_pain/                     # Belly pain cry samples
 │   ├── burping/                        # Burping cry samples
@@ -349,10 +379,175 @@ Cry-Detection-Classification-Model/
 │   ├── cry/                            # Baby cry samples
 │   └── not_cry/                        # Non-cry audio samples
 │
+├── .gitignore                           # Git ignore configuration
 └── README.md                            # This file
 ```
 
 ## Model Training
+
+## Incubator Pipeline Integration
+
+The `incubator_cry_detection_pipeline/` directory contains production-ready modules for integrating the cry detection and classification system into real-time incubator monitoring systems.
+
+### Module Overview
+
+#### 1. `cry_detector.py` - Real-time Cry Detection Service
+
+A lightweight service for continuous audio stream monitoring and cry detection.
+
+**Key Features:**
+
+- Real-time audio stream processing
+- Configurable detection thresholds
+- Event-based cry alerts
+- Low latency detection (<200ms)
+- Thread-safe audio buffer management
+
+**Usage Example:**
+
+```python
+from incubator_cry_detection_pipeline.cry_detector import CryDetector
+
+# Initialize detector
+detector = CryDetector(
+    model_path="cry_project/det_models/yamnet_lr_model.joblib",
+    threshold=0.212
+)
+
+# Process audio stream
+audio_data = record_audio()  # Your audio capture method
+is_crying, confidence = detector.detect(audio_data)
+
+if is_crying:
+    print(f"Cry detected with confidence: {confidence:.2f}")
+```
+
+#### 2. `cry_classification_service.py` - Production Classification Service
+
+A robust service for classifying detected cries into specific categories.
+
+**Key Features:**
+
+- Batch or single-sample classification
+- Confidence-based filtering
+- Pre-loaded models for fast inference
+- Error handling and validation
+- Standardized output format
+
+**Usage Example:**
+
+```python
+from incubator_cry_detection_pipeline.cry_classification_service import CryClassificationService
+
+# Initialize classifier
+classifier = CryClassificationService(
+    model_dir="cry_project/models/",
+    confidence_threshold=0.6
+)
+
+# Classify cry type
+result = classifier.classify(audio_data)
+
+print(f"Cry Type: {result['cry_type']}")
+print(f"Confidence: {result['confidence']:.2f}")
+print(f"All Predictions: {result['probabilities']}")
+```
+
+### Integration Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                  Incubator Monitoring System                │
+└───────────────────────────┬─────────────────────────────────┘
+                            │
+                            ↓
+                ┌───────────────────────┐
+                │  Audio Stream Source  │
+                │  (Microphone/Sensor)  │
+                └───────────┬───────────┘
+                            │
+                            ↓
+            ┌───────────────────────────────┐
+            │   cry_detector.py Service    │
+            │  (Detection: Cry vs No Cry)  │
+            └───────────┬───────────────────┘
+                        │
+                        ↓ (If Cry Detected)
+        ┌───────────────────────────────────────┐
+        │  cry_classification_service.py       │
+        │  (Classification: Cry Type)          │
+        └───────────┬───────────────────────────┘
+                    │
+                    ↓
+        ┌───────────────────────────────┐
+        │   Alert/Notification System   │
+        │  (Dashboard, Mobile App, etc) │
+        └───────────────────────────────┘
+```
+
+### Deployment Considerations
+
+**For Real-time Systems:**
+
+- Use threading or async processing for continuous monitoring
+- Implement audio buffer management to prevent memory overflow
+- Set appropriate detection intervals (recommended: 3-5 seconds)
+- Monitor CPU/memory usage for resource-constrained devices
+
+**For IoT/Embedded Devices:**
+
+- Consider model quantization for faster inference
+- Use detection-only mode if classification is not critical
+- Implement edge caching for reduced latency
+- Use lightweight audio preprocessing
+
+**Example Integration:**
+
+```python
+import threading
+import time
+from incubator_cry_detection_pipeline.cry_detector import CryDetector
+from incubator_cry_detection_pipeline.cry_classification_service import CryClassificationService
+
+class IncubatorMonitor:
+    def __init__(self):
+        self.detector = CryDetector()
+        self.classifier = CryClassificationService()
+        self.monitoring = False
+
+    def start_monitoring(self):
+        self.monitoring = True
+        thread = threading.Thread(target=self._monitor_loop)
+        thread.start()
+
+    def _monitor_loop(self):
+        while self.monitoring:
+            audio = self.capture_audio_chunk()  # Implement your audio capture
+
+            # Stage 1: Detection
+            is_crying, det_confidence = self.detector.detect(audio)
+
+            if is_crying:
+                # Stage 2: Classification
+                result = self.classifier.classify(audio)
+                self.handle_cry_alert(result)
+
+            time.sleep(3)  # 3-second intervals
+
+    def handle_cry_alert(self, result):
+        # Your alert logic here
+        print(f"ALERT: Baby is {result['cry_type']} (confidence: {result['confidence']:.2f})")
+        # Send notification, update dashboard, etc.
+```
+
+### API Reference
+
+Detailed API documentation for integration modules is available in the source files:
+
+- `incubator_cry_detection_pipeline/cry_detector.py` - Detection API
+- `incubator_cry_detection_pipeline/cry_classification_service.py` - Classification API
+
+---
 
 ### Training the Detection Model
 
