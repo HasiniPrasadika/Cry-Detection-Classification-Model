@@ -1,0 +1,187 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+.virtualenv/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+*.ipynb_checkpoints
+
+# PyCharm
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Machine Learning / Data Science
+*.pkl
+*.joblib
+*.h5
+*.hdf5
+*.pth
+*.pt
+*.ckpt
+*.pb
+*.tflite
+*.onnx
+
+# Model artifacts (keep if you want to exclude trained models)
+# Uncomment the lines below if you don't want to track model files
+# cry_project/models/*.pkl
+# cry_project/models/*.joblib
+# cry_project/det_models/*.pkl
+# cry_project/det_models/*.joblib
+
+# Dataset files (large audio files)
+dataset/**/*.wav
+dataset/**/*.mp3
+dataset/**/*.flac
+dataset/**/*.ogg
+det_dataset/**/*.wav
+det_dataset/**/*.mp3
+det_dataset/**/*.flac
+det_dataset/**/*.ogg
+
+# Keep directory structure but ignore audio files
+!dataset/.gitkeep
+!det_dataset/.gitkeep
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
+*.swp
+*.swo
+*~
+temp_audio.wav
+cry_project/temp_audio.wav
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Streamlit
+.streamlit/
+*.streamlit
+
+# TensorFlow
+*.tfevents.*
+checkpoints/
+logs/
+tensorboard/
+
+# Output files
+output/
+results/
+*.csv
+*.xlsx
+
+# Google Colab
+.config/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# Large files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Documentation builds
+docs/_build/
+site/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Sphinx documentation
+docs/_build/
+
+# mkdocs documentation
+/site
+
+# Azure, AWS, GCP credentials
+*.pem
+*.key
+credentials.json
+service-account.json
